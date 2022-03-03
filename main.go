@@ -14,18 +14,18 @@ import (
 	"github.com/bancodobrasil/featws-resolver-climatempo/config"
 )
 
-var Config = config.Config{}
+var cfg = config.Config{}
 
 func main() {
 
-	err := config.LoadConfig(&Config)
+	err := config.LoadConfig(&cfg)
 	if err != nil {
 		log.Fatalf("Não foi possível carregar as configurações: %s\n", err)
 	}
-	adapter.Run(Resolver)
+	adapter.Run(resolver)
 }
 
-func Resolver(resolveInput services.ResolveInput, output *services.ResolveOutput) {
+func resolver(resolveInput services.ResolveInput, output *services.ResolveOutput) {
 	sort.Strings(resolveInput.Load)
 
 	if contains(resolveInput.Load, "weather") {
@@ -35,7 +35,7 @@ func Resolver(resolveInput services.ResolveInput, output *services.ResolveOutput
 		if !ok {
 			output.Errors["weather"] = "The context 'locale' maybe be bounded for resolve 'weather'"
 		} else {
-			serviceLink := fmt.Sprintf("http://apiadvisor.climatempo.com.br/api/v1/weather/locale/%s/current?token=%s", locale, Config.Token)
+			serviceLink := fmt.Sprintf("http://apiadvisor.climatempo.com.br/api/v1/weather/locale/%s/current?token=%s", locale, cfg.Token)
 			//log.Debug("ServiceLink: ", serviceLink)
 			resp, err := http.Get(serviceLink)
 			if err != nil {
