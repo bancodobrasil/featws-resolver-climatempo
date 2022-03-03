@@ -1,6 +1,6 @@
 version: "3.6"
 services:
-  ruller:
+  resolver:
     build: .
     ports:
       - 7000:7000
