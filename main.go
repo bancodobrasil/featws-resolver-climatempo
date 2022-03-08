@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	adapter "github.com/bancodobrasil/featws-resolver-adapter-go"
-	"github.com/bancodobrasil/featws-resolver-adapter-go/services"
+	"github.com/bancodobrasil/featws-resolver-adapter-go/types"
 	"github.com/bancodobrasil/featws-resolver-climatempo/config"
 )
 
@@ -25,7 +25,7 @@ func main() {
 	adapter.Run(resolver)
 }
 
-func resolver(resolveInput services.ResolveInput, output *services.ResolveOutput) {
+func resolver(resolveInput types.ResolveInput, output *types.ResolveOutput) {
 	sort.Strings(resolveInput.Load)
 
 	if contains(resolveInput.Load, "weather") {
@@ -33,7 +33,7 @@ func resolver(resolveInput services.ResolveInput, output *services.ResolveOutput
 	}
 }
 
-func resolveWeather(resolveInput services.ResolveInput, output *services.ResolveOutput) {
+func resolveWeather(resolveInput types.ResolveInput, output *types.ResolveOutput) {
 	locale, ok := resolveInput.Context["locale"]
 
 	if !ok {
