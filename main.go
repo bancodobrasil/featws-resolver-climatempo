@@ -29,40 +29,39 @@ func resolver(resolveInput services.ResolveInput, output *services.ResolveOutput
 	sort.Strings(resolveInput.Load)
 
 	if contains(resolveInput.Load, "weather") {
+		resolveWeather(resolveInput, output)
+	}
+}
 
-		locale, ok := resolveInput.Context["locale"]
+func resolveWeather(resolveInput services.ResolveInput, output *services.ResolveOutput) {
+	locale, ok := resolveInput.Context["locale"]
 
-		if !ok {
-			output.Errors["weather"] = "The context 'locale' maybe be bounded for resolve 'weather'"
+	if !ok {
+		output.Errors["weather"] = "The context 'locale' maybe be bounded for resolve 'weather'"
+	} else {
+		serviceLink := fmt.Sprintf("http://apiadvisor.climatempo.com.br/api/v1/weather/locale/%s/current?token=%s", locale, cfg.Token)
+
+		resp, err := http.Get(serviceLink)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		result := make(map[string]interface{})
+
+		json.Unmarshal(body, &result)
+
+		err2, ok := result["error"]
+
+		if ok && err2.(bool) {
+
+			output.Errors["weather"] = result
 		} else {
-			serviceLink := fmt.Sprintf("http://apiadvisor.climatempo.com.br/api/v1/weather/locale/%s/current?token=%s", locale, cfg.Token)
-			//log.Debug("ServiceLink: ", serviceLink)
-			resp, err := http.Get(serviceLink)
-			if err != nil {
-				log.Fatalln(err)
-			}
-
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatalln(err)
-			}
-
-			result := make(map[string]interface{})
-
-			json.Unmarshal(body, &result)
-
-			err2, ok := result["error"]
-
-			if ok && err2.(bool) {
-				// str, err := json.Marshal(result)
-				// if err != nil {
-				// 	log.Fatalln(err)
-				// }
-				output.Errors["weather"] = result
-			} else {
-				output.Context["weather"] = result
-			}
-
+			output.Context["weather"] = result
 		}
 
 	}
