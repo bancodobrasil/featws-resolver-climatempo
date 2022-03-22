@@ -2,6 +2,8 @@ version: "3.6"
 services:
   resolver:
     build: .
+    environment:
+      - PORt=7000
     ports:
       - 7000:7000
     expose:

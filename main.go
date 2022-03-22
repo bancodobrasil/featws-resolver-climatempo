@@ -22,7 +22,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Não foi possível carregar as configurações: %s\n", err)
 	}
-	adapter.Run(resolver)
+	adapter.Run(resolver, adapter.Config{
+		Port: cfg.Port,
+	})
 }
 
 func resolver(resolveInput types.ResolveInput, output *types.ResolveOutput) {

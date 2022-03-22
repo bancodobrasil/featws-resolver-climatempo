@@ -9,6 +9,7 @@ import (
 //Config ...
 type Config struct {
 	Token string `mapstructure:"FEATWS_RESOLVER_CLIMATEMPO_TOKEN"`
+	Port  string `mapstructure:"PORT"`
 }
 
 //LoadConfig ...
@@ -19,6 +20,7 @@ func LoadConfig(config *Config) (err error) {
 
 	viper.AutomaticEnv()
 	viper.SetDefault("FEATWS_RESOLVER_CLIMATEMPO_TOKEN", "")
+	viper.SetDefault("PORT", "7000")
 
 	err = viper.ReadInConfig()
 	if err != nil {
